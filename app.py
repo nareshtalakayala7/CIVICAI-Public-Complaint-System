@@ -181,7 +181,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.update(
         SECRET_KEY=os.getenv("SECRET_KEY", "civicai-demo-change-this-secret-before-deploying"),
-        SQLALCHEMY_DATABASE_URI=os.getenv("DATABASE_URL", f"sqlite:///{ROOT / 'instance' / 'civicai.db'}").replace("postgres://", "postgresql://", 1),
+        SQLALCHEMY_DATABASE_URI=os.getenv("DATABASE_URL", f"sqlite:///{ROOT / 'instance' / 'civicai.db'}").replace("postgres://", "postgresql+psycopg2://", 1).replace("postgresql://", "postgresql+psycopg2://", 1),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         JWT_SECRET_KEY=os.getenv("JWT_SECRET_KEY", "civicai-demo-jwt-secret-change-before-deploying"),
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(hours=8),
