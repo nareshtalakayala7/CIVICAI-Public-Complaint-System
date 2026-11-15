@@ -186,7 +186,7 @@ def create_app(test_config=None):
         JWT_SECRET_KEY=os.getenv("JWT_SECRET_KEY", "civicai-demo-jwt-secret-change-before-deploying"),
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(hours=8),
         MAX_CONTENT_LENGTH=5 * 1024 * 1024,
-        UPLOAD_FOLDER=str(ROOT / "instance" / "uploads"),
+        UPLOAD_FOLDER=os.getenv("UPLOAD_FOLDER", str(ROOT / "instance" / "uploads")),
         SESSION_COOKIE_NAME="civicai_session",
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
