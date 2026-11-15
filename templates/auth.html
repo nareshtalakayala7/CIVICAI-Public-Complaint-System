@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="auth-wrap">
+  <div class="auth-side"><div class="auth-art"><div class="auth-orbit"></div><div class="auth-building"><i class="bi bi-buildings"></i></div><div class="auth-path"></div><span class="auth-star star-a">✦</span><span class="auth-star star-b">✧</span><span class="auth-mini-card"><i class="bi bi-shield-check"></i> Secure civic access</span></div><div class="auth-side-copy"><div class="eyebrow">CIVICAI · {{ role|upper }} PORTAL</div><h2>{{ 'Good to have you here.' if mode == 'login' else 'Your city, your voice.' }}</h2><p>{{ 'Pick up where you left off. Your city’s next improvement could start with you.' if mode == 'login' else 'Join your neighbours in making local services more responsive and transparent.' }}</p></div></div>
+  <div class="auth-panel"><a class="back-link" href="{{ url_for('index') }}"><i class="bi bi-arrow-left"></i> Back to home</a>
+    <div class="auth-heading"><span class="portal-badge"><i class="bi {{ 'bi-person-badge' if role == 'citizen' else 'bi-shield-lock' if role == 'admin' else 'bi-person-workspace' }}"></i> {{ role.title() }} access</span><h1>{{ 'Create your account' if mode == 'register' else 'Welcome back' }}</h1><p>{{ 'A better city starts with a clear report.' if mode == 'register' else 'Sign in to continue to your CIVICAI workspace.' }}</p></div>
+    <form method="post" class="form-stack"><input type="hidden" name="csrf_token" value="{{ csrf_token_value }}">
+      {% if mode == 'register' %}<label>Full name<input name="full_name" autocomplete="name" placeholder="e.g. Priya Sharma" required minlength="2" maxlength="120"></label>{% endif %}
+      <label>Email address<input type="email" name="email" autocomplete="email" placeholder="you@example.com" required></label>
+      {% if mode == 'register' %}<label>Phone number<input name="phone" autocomplete="tel" placeholder="+91 98765 43210" required minlength="7"></label><label>Neighbourhood / address <span class="optional">OPTIONAL</span><input name="address" autocomplete="street-address" placeholder="Area, street or landmark"></label>{% endif %}
+      <label>Password <span class="optional">{{ '8 CHARACTERS MINIMUM' if mode == 'register' else '' }}</span><div class="password-field"><input type="password" name="password" autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}" placeholder="{{ 'Create a password' if mode == 'register' else 'Enter your password' }}" required {{ 'minlength=8' if mode == 'register' }}><button type="button" class="password-toggle" aria-label="Show password"><i class="bi bi-eye"></i></button></div></label>
+      <button class="btn btn-primary btn-lg full-width" type="submit">{{ 'Create account' if mode == 'register' else 'Sign in' }} <i class="bi bi-arrow-right"></i></button>
+    </form>
+    <div class="auth-switch">{% if role == 'citizen' %}{{ 'Already have an account?' if mode == 'register' else 'New to CIVICAI?' }} <a href="{{ url_for('citizen_login') if mode == 'register' else url_for('register') }}">{{ 'Sign in' if mode == 'register' else 'Create an account' }}</a>{% else %}Need a citizen account? <a href="{{ url_for('register') }}">Register here</a>{% endif %}</div>
+    {% if mode == 'login' and role == 'citizen' %}<div class="other-portals"><span>STAFF ACCESS</span><a href="{{ url_for('admin_login') }}"><i class="bi bi-shield-lock"></i> Administrator <i class="bi bi-arrow-up-right"></i></a><a href="{{ url_for('officer_login') }}"><i class="bi bi-person-workspace"></i> Department officer <i class="bi bi-arrow-up-right"></i></a></div>{% endif %}
+    <div class="secure-note"><i class="bi bi-lock-fill"></i> Your information is encrypted and protected.</div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="{{ 'te' if current_language == 'te' else 'en' }}">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07121f"><meta name="description" content="CIVICAI helps citizens report, track and resolve civic issues with transparent AI-assisted triage."><link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <title>{{ title or 'CIVICAI — Public services, moving forward' }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('index') }}" aria-label="CIVICAI home">
+      <span class="brand-mark"><i class="bi bi-buildings-fill"></i><span></span></span><span class="brand-copy"><b>CIVIC<span>AI</span></b><small>PUBLIC SERVICES · HYDERABAD</small></span>
+    </a>
+    <button class="mobile-menu" id="mobileMenu" aria-label="Open navigation"><i class="bi bi-list"></i></button>
+    <nav class="main-nav" id="mainNav">
+      <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">{{ tr('Home') }}</a>
+      <a href="{{ url_for('about') }}">{{ tr('About') }}</a>
+      <a href="{{ url_for('track') }}">{{ tr('Track complaint') }}</a>
+      {% if current_role == 'citizen' %}<a href="{{ url_for('my_complaints') }}">{{ tr('My complaints') }}</a>{% endif %}
+      {% if current_role == 'admin' %}<a href="{{ url_for('analytics') }}">{{ tr('Analytics') }}</a>{% endif %}
+      {% if current_role == 'officer' %}<a href="{{ url_for('assigned_complaints') }}">{{ tr('My complaints') }}</a>{% endif %}
+      <a href="{{ url_for('contact') }}">{{ tr('Contact') }}</a>
+    </nav>
+    <div class="header-actions">
+      <form action="{{ url_for('set_language') }}" method="post" class="lang-switch"><input type="hidden" name="csrf_token" value="{{ csrf_token_value }}"><input type="hidden" name="next" value="{{ request.full_path }}"><button type="submit" name="lang" value="{{ 'en' if current_language == 'te' else 'te' }}" aria-label="Switch language">{{ 'EN' if current_language == 'te' else 'తెలుగు' }}</button></form>
+      {% if current_role %}
+        <a class="avatar-link" href="{{ url_for('profile') if current_role == 'citizen' else url_for('dashboard') }}"><span class="avatar">{{ (current_user_name or 'U')[0]|upper }}</span><span class="avatar-name">{{ current_user_name or 'My workspace' }}</span></a>
+        <form action="{{ url_for('logout') }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token_value }}"><button class="btn btn-quiet btn-sm" type="submit">{{ tr('Sign out') }}</button></form>
+      {% else %}
+        <a class="btn btn-quiet btn-sm hide-small" href="{{ url_for('citizen_login') }}">{{ tr('Sign in') }}</a>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('register') }}">{{ tr('Create account') }} <i class="bi bi-arrow-up-right"></i></a>
+      {% endif %}
+    </div>
+  </header>
+  <main class="page-shell">
+    {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack" aria-live="polite">{% for category,message in messages %}<div class="flash flash-{{ category }}"><i class="bi {{ 'bi-check-circle-fill' if category == 'success' else 'bi-exclamation-circle-fill' }}"></i><span>{{ message }}</span><button type="button" class="flash-close" aria-label="Dismiss"><i class="bi bi-x-lg"></i></button></div>{% endfor %}</div>{% endif %}{% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer"><div class="footer-brand"><span class="brand-mark small"><i class="bi bi-buildings-fill"></i><span></span></span><span><b>CIVICAI</b><small>Every report moves us forward.</small></span></div><div class="footer-links"><a href="{{ url_for('about') }}">{{ tr('About') }}</a><a href="{{ url_for('contact') }}">{{ tr('Contact') }}</a><a href="{{ url_for('admin_login') }}">Admin portal</a><a href="{{ url_for('officer_login') }}">Officer portal</a></div><span class="copyright">© 2026 CIVICAI · A Community Service Project</span></footer>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
